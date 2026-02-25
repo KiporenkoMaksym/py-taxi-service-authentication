@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import generic
 
@@ -45,3 +46,13 @@ class DriverListView(generic.ListView):
 class DriverDetailView(generic.DetailView):
     model = Driver
     queryset = Driver.objects.prefetch_related("cars__manufacturer")
+
+
+def test_session_view(request):
+    request.session["test"] = "test-session"
+    num_visits = request.session.get("num_visits", 0) + 1
+    request.session["num_visits"] = num_visits
+    return HttpResponse(
+        f"<h1>Session data: {request.session.get('test')}</h1>"
+        f" You have visited this page {num_visits} times."
+    )
